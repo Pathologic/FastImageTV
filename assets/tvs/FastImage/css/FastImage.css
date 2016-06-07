@@ -1,0 +1,68 @@
+.fi-placeholder {
+    display: inline-block;
+    min-width:200px;
+    min-height:200px;
+    position:relative;
+    border:1px dashed #000;
+    background: #fff;
+    margin:10px 0 0 0;
+}
+.fi-placeholder.dnd:after {
+    content:"";
+    display:block;
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background: rgba(255,255,255,.5);
+}
+.fi-upload-input {
+    display: none;
+}
+.fi-actions {
+    position: absolute;
+    bottom:0;
+    width:100%;
+    text-align: center;
+    padding:10px 0;
+    background: rgba(0,0,0,.5);
+}
+.fi-btn {
+    display: inline-block;
+    text-align: center;
+    padding:5px 10px;
+    color:#fff !important;
+    text-decoration:none !important;
+    margin:0 3px;
+}
+.fi-btn.disabled {
+    opacity:0.5;
+    cursor:not-allowed;
+}
+.fi-upload {
+    background-color: rgb(36, 147, 34);
+}
+.fi-delete {
+    background-color: rgb(255, 40, 57);
+}
+.fi-progress {
+    display: none;
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:0;
+    height:3px;
+    background-color: rgb(36, 147, 34);
+    transition:width .5s ease;
+}
+.fi-image {
+    width:auto;
+    height:auto;
+    max-width:200px;
+    max-height:200px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+}
