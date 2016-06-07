@@ -104,7 +104,8 @@
             },
             save: function(value) {
                 tv.val(value.path + value.file);
-                $('.fi-image',placeholder).attr('src',settings.siteUrl + value.path+'.thumbs/'+value.file);
+                thumbnail = settings.siteUrl + (value.thumbnail !== undefined ? value.thumbnail : value.path + value.file);
+                $('.fi-image',placeholder).attr('src',thumbnail);
                 deleteBtn.removeClass('disabled');
             }
         };

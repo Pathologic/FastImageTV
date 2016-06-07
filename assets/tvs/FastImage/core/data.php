@@ -43,6 +43,7 @@ class Data extends \autoTable {
             if (!empty($this->config['thumbnail'])) {
                 $value = $this->config['thumbnail'];
                 $this->makeThumb($value['folder'],$data['path'].$data['file'],$value['options']);
+                $this->set('thumbnail',$this->getThumbnail($data['path'].$data['file']));
             }
             if (!empty($this->config['previews'])) {
                 foreach ($this->config['previews'] as $key=>$value) {
@@ -68,10 +69,10 @@ class Data extends \autoTable {
             $row = $this->modx->db->getRow($result);
             $this->loadConfig();
             $this->loadConfig($row['class']);
-            $this->fs->unlink($row['path'].$row['file']);
-            if (!empty($this->config['thumbnail'])) {
-                $old = $row['path'].'/'.$this->config['thumbnail']['folder'].'/'.$row['file'];
-                $this->fs->unlink($old);
+            $file = $row['path'].$row['file'];
+            $this->fs->unlink($file);
+            if (!empty($thumbnail = $this->getThumbnail($file))) {
+                $this->fs->unlink($thumbnail);
             }
             if (!empty($this->config['previews'])) {
                 foreach ($this->config['previews'] as $key=>$value) {
@@ -99,8 +100,8 @@ class Data extends \autoTable {
             $this->loadConfig();
             $this->loadConfig($row['class']);
             $this->edit($row['id'])->set('parent',$data['id']);
-            $this->set('path',str_replace(array('__id0__','__pid0__'),array($data['id'],$data['parent']),$row['path']));
-            $this->set('file',str_replace(array('__id0__','__pid0__'),array($data['id'],$data['parent']),$row['file']));
+            $this->set('path',str_replace(array('__id__','__pid__'),array($data['id'],$data['parent']),$row['path']));
+            $this->set('file',str_replace(array('__id__','__pid__'),array($data['id'],$data['parent']),$row['file']));
             $path = $this->get('path');
             $file = $this->get('file');
             $new = $path.$file;
@@ -108,9 +109,8 @@ class Data extends \autoTable {
             $this->close();
             $this->fs->moveFile($image,$new);
             $out = $new;
-            if (!empty($this->config['thumbnail'])) {
-                $old = $row['path'].'/'.$this->config['thumbnail']['folder'].'/'.$row['file'];
-                $new = $path.'/'.$this->config['thumbnail']['folder'].'/'.$file;
+            if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
+                $new = $this->getThumbnail($new);
                 $this->fs->moveFile($old,$new);
             }
             if (!empty($this->config['previews'])) {
@@ -199,15 +199,20 @@ class Data extends \autoTable {
     }
     
     public function getThumbnail($image) {
-        $path = $this->fs->takeFileDir($image);
-        $path = $path.'/'.$this->config['thumbnail']['folder'].'/'.$this->fs->takeFileBasename($image);
-        return $this->fs->relativePath($path);
+        $out = '';
+        if (!empty($this->config['thumbnail']['folder'])) {
+            $path = $this->fs->takeFileDir($image);
+            $path = $path.'/'.$this->config['thumbnail']['folder'].'/'.$this->fs->takeFileBasename($image);
+            $out =$this->fs->relativePath($path);
+        }
+
+        return $out;
     }
 
     public function prepare($str) {
         $ph = array(
-            '[+id+]'      => $this->documentData['id'] ? $this->documentData['id'] : '__id0__',    // Resource ID
-            '[+parent+]'  => $this->documentData['parent'] ? $this->documentData['parent'] : '__pid0__',      // Resource Parent ID
+            '[+id+]'      => $this->documentData['id'] ? $this->documentData['id'] : '__id__',    // Resource ID
+            '[+parent+]'  => $this->documentData['parent'] ? $this->documentData['parent'] : '__pid__',      // Resource Parent ID
             '[+uid+]'     => $this->modx->getLoginUserID('mgr'),    // User ID
             '[+rand+]'    => substr(uniqid(), 0, 6),          // Random string
             '[+time+]'    => time(),    // Timestamp
@@ -241,7 +246,7 @@ OUT;
         return $this->query($sql);
     }
 
-    public function loadConfig($config) {
+    public function loadConfig ($config = 'default') {
         if (empty($config)) $config = 'default';
         $file = MODX_BASE_PATH."assets/tvs/FastImage/config/{$config}.php";
         if ($this->fs->checkFile($file)) {
