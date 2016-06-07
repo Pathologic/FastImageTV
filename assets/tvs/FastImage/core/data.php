@@ -77,23 +77,29 @@ class Data extends \autoTable {
     public function delete($ids, $fire_events = null) {
         $_ids = $this->sanitarIn($ids);
         $result = $this->query("SELECT * FROM {$this->makeTable($this->table)} WHERE `id` IN ({$_ids})");
+
         if ($this->modx->db->getRecordCount($result)) {
-            $row = $this->modx->db->getRow($result);
-            $this->loadConfig();
-            $this->loadConfig($row['class']);
-            $file = $row['path'].$row['file'];
-            $this->fs->unlink($file);
-            if (!empty($thumbnail = $this->getThumbnail($file))) {
-                $this->fs->unlink($thumbnail);
-            }
-            if (!empty($this->config['previews'])) {
-                foreach ($this->config['previews'] as $key=>$value) {
-                    $old = $row['path'].'/'.$value['folder'].'/'.$row['file'];
-                    $this->fs->unlink($old);
+            while($row = $this->modx->db->getRow($result)) {
+                $this->loadConfig();
+                $this->loadConfig($row['class']);
+                $file = $row['path'] . $row['file'];
+                $this->fs->unlink($file);
+                if (!empty($thumbnail = $this->getThumbnail($file))) {
+                    $this->fs->unlink($thumbnail);
+                    @rmdir($this->fs->takeFileDir($thumbnail));
                 }
+                if (!empty($this->config['previews'])) {
+                    foreach ($this->config['previews'] as $key => $value) {
+                        $old = $row['path'] . '/' . $value['folder'] . '/' . $row['file'];
+                        $this->fs->unlink($old);
+                        @rmdir($this->fs->takeFileDir($old));
+                    }
+                }
+                @rmdir($this->fs->takeFileDir($file));
             }
         }
         parent::delete($ids, $fire_events);
+
         $this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
     }
 
@@ -124,14 +130,17 @@ class Data extends \autoTable {
             if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
                 $new = $this->getThumbnail($new);
                 $this->fs->moveFile($old,$new);
+                @rmdir($this->fs->takeFileDir($old));
             }
             if (!empty($this->config['previews'])) {
                 foreach ($this->config['previews'] as $key=>$value) {
                     $old = $row['path'].'/'.$value['folder'].'/'.$row['file'];
                     $new = $path.'/'.$value['folder'].'/'.$file;
                     $this->fs->moveFile($old,$new);
+                    @rmdir($this->fs->takeFileDir($old));
                 }
             }
+            @rmdir($this->fs->takeFileDir($image));
         }
         return $out;
     }
