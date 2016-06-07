@@ -34,20 +34,32 @@ class Data extends \autoTable {
 
     public function upload($data) {
         if (!is_array($data) || empty($data)) return false;
+        $file = $data['path'].$data['file'];
         $this->create($data);
         $this->touch('createdon');
         $this->set('createdby',$this->modx->getLoginUserID('mgr'));
-        $this->set('size',$this->fs->fileSize($data['path'].$data['file']));
+        if (!$this->config['clientResize']) {
+            $options = array();
+            if (!empty($maxWidth = $this->config['imageTransform']['maxWidth'])) $options[] = 'w='.$maxWidth;
+            if (!empty($maxHeight = $this->config['imageTransform']['maxHeight'])) $options[] = 'h='.$maxHeight;
+            if (!empty($quality = $this->config['imageTransform']['quality'])) {
+                $options[] = 'q='.round($quality * 100,0);
+            }
+            $options[] = 'ar=x';
+            $thumb = new \Helpers\PHPThumb();
+            $thumb->create(MODX_BASE_PATH.$file,MODX_BASE_PATH.$file,implode('&',$options));
+        }
+        $this->set('size',$this->fs->fileSize($file));
         $out = $this->save(true);
         if ($out) {
             if (!empty($this->config['thumbnail'])) {
                 $value = $this->config['thumbnail'];
-                $this->makeThumb($value['folder'],$data['path'].$data['file'],$value['options']);
-                $this->set('thumbnail',$this->getThumbnail($data['path'].$data['file']));
+                $this->makeThumb($value['folder'],$file,$value['options']);
+                $this->set('thumbnail',$this->getThumbnail($file));
             }
             if (!empty($this->config['previews'])) {
                 foreach ($this->config['previews'] as $key=>$value) {
-                    $this->makeThumb($value['folder'],$data['path'].$data['file'],$value['params']);
+                    $this->makeThumb($value['folder'],$file,$value['params']);
                 }
             }
         }

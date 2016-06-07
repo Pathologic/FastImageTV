@@ -70,6 +70,13 @@ class TV {
         $image = $this->data->getThumbnail($this->tv['value']);
         $imageNotExists = empty($this->tv['value']) || !$this->fs->checkFile(MODX_BASE_PATH.$this->tv['value']);
         if (!$imageNotExists) $image = $this->tv['value'];
+        $settings = array(
+            "tv" => "#tv".$this->tv['id'],
+            "classname" => $this->tv['name'],
+            "siteUrl" => $this->modx->config['site_url'],
+            "documentData" => $this->documentData,
+            "clientResize" => $this->data->config['clientResize'] && !empty($this->data->config['imageTransform']) ? $this->data->config['imageTransform'] : array()
+        );
         $ph = array (
             'js'         => $this->loadAssets($this->jsListDefault),
             'css'        => $this->loadAssets($this->cssListDefault),
@@ -77,9 +84,8 @@ class TV {
             'tv_value'   => $imageNotExists ? '' : $this->tv['value'],
             'tv_name'    => $this->tv['name'],
             'disabled'   => $imageNotExists ? ' disabled' : '',
-            'site_url'   => $this->modx->config['site_url'],
-            'documentData' => json_encode($this->documentData),
-            'image'      => $imageNotExists ? $this->modx->config['site_url'].'assets/tvs/FastImage/images/noimage.png' : $this->modx->config['site_url'].$image
+            'image'      => $imageNotExists ? $this->modx->config['site_url'].'assets/tvs/FastImage/images/noimage.png' : $this->modx->config['site_url'].$image,
+            'settings'  => json_encode($settings)
         );
         return $ph;
     }

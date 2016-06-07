@@ -12,11 +12,6 @@
 </div>
 <script type="text/javascript">
     (function($) {
-        $('#FastImage[+tv_id+]').FastImageTV({
-            'tv':'#tv[+tv_id+]',
-            'classname':'[+tv_name+]',
-            'siteUrl':'[+site_url+]',
-            'documentData':[+documentData+]
-        });
+        $('#FastImage[+tv_id+]').FastImageTV([+settings+]);
     })(jQuery)
 </script>

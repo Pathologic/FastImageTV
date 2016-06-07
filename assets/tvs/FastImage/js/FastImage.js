@@ -1,10 +1,11 @@
 (function($) {
     $.fn.FastImageTV = function(options) {
         var settings = $.extend( {
-            'tv'   : '',
-            'siteUrl' : '/',
-            'classname' : '',
-            'documentData' : {}
+            tv   : '',
+            siteUrl : '/',
+            classname : '',
+            documentData : {},
+            clientResize:{}
         }, options);
         var placeholder = this,
             tv = $(settings.tv),
@@ -47,7 +48,7 @@
             },
             upload: function(files) {
                 if( files.length ){
-                    FileAPI.upload({
+                    var options = {
                         url: settings.siteUrl+'assets/tvs/FastImage/ajax.php',
                         files: { file: files },
                         data: {
@@ -55,6 +56,7 @@
                             class: settings.classname,
                             documentData: settings.documentData
                         },
+                        imageAutoOrientation: false,
                         upload: function() {
                             uploadBtn.addClass('disabled');
                             progress.show();
@@ -76,14 +78,23 @@
                                 }
                             }
                         }
-                    });
+                    };
+                    if (Object.keys(settings.clientResize).length) {
+                        options.imageTransform = {
+                            maxWidth: settings.clientResize.maxWidth,
+                            maxHeight: settings.clientResize.maxHeight,
+                            quality: settings.clientResize.quality
+                        };
+                        options.imageAutoOrientation = true;
+                    }
+                    FileAPI.upload(options);
                 }
             },
             clear: function() {
                 upload.replaceWith(upload = upload.clone( true ));
             },
             delete: function() {
-                file = tv.val();
+                var file = tv.val();
                 $.post(
                     settings.siteUrl+'assets/tvs/FastImage/ajax.php',
                     {
@@ -104,7 +115,7 @@
             },
             save: function(value) {
                 tv.val(value.path + value.file);
-                thumbnail = settings.siteUrl + (value.thumbnail !== undefined ? value.thumbnail : value.path + value.file);
+                var thumbnail = settings.siteUrl + (value.thumbnail !== undefined ? value.thumbnail : value.path + value.file);
                 $('.fi-image',placeholder).attr('src',thumbnail);
                 deleteBtn.removeClass('disabled');
             }
