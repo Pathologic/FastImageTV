@@ -67,9 +67,9 @@ class TV {
     }
 
     public function getTplPlaceholders() {
-        $thumbnail = $this->data->getThumbnail($this->tv['value']);
         $imageExists = !empty($this->tv['value']) && $this->fs->checkFile(MODX_BASE_PATH.$this->tv['value']);
         if ($imageExists) {
+            $thumbnail = $this->data->getThumbnail($this->tv['value']);
             $image = empty($thumbnail) ? $this->tv['value'] : $thumbnail;
         } else {
             $image = 'assets/tvs/FastImage/images/noimage.png';
@@ -86,9 +86,9 @@ class TV {
             'js'         => $this->loadAssets($this->jsListDefault),
             'css'        => $this->loadAssets($this->cssListDefault),
             'tv_id'      => $this->tv['id'],
-            'tv_value'   => $imageNotExists ? '' : $this->tv['value'],
+            'tv_value'   => !$imageExists ? '' : $this->tv['value'],
             'tv_name'    => $this->tv['name'],
-            'disabled'   => $imageNotExists ? ' disabled' : '',
+            'disabled'   => !$imageExists ? ' disabled' : '',
             'image'      => $image,
             'settings'  => json_encode($settings)
         );
