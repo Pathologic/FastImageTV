@@ -17,7 +17,7 @@ class Controller {
         $this->uid = $modx->getLoginUserID('mgr');
         $this->data = new Data($modx);
         $this->fs = \Helpers\FS::getInstance();
-        $this->class = empty($_REQUEST['class']) || !is_scalar($_REQUEST['class']) ? '' : $_REQUEST['class'];
+        $this->class = empty($_REQUEST['class']) || !is_scalar($_REQUEST['class']) ? '' : $this->modx->db->escape($_REQUEST['class']);
         $this->data->loadConfig($this->class);
         $this->config = $this->data->config;
         $this->documentData = array(
