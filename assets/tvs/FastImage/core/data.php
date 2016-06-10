@@ -218,6 +218,39 @@ class Data extends \autoTable {
             $this->delete($ids);
         }
     }
+
+    public function duplicate($source,$target) {
+        $table = $this->makeTable($this->table);
+        $result = $this->modx->db->select('*', $table, "parent='{$source}'");
+        $parent = $this->modx->db->select('parent',$this->makeTable('site_content'),"id='{$source}'");
+        $parent = $this->modx->db->getRow('parent',$parent);
+        if ($this->modx->db->getRecordCount($result)) {
+            while ($row = $this->modx->db->getRow($result)) {
+                unset($row['id']);
+                $this->documentData['id'] = $target;
+                $this->documentData['parent'] = $parent;
+                $row['parent'] = $target;
+                $this->loadConfig();
+                $this->loadConfig($row['class']);
+                $dir = $this->config['folder'];
+                $dir = $this->prepare($dir);
+                $this->fs->copyFile($row['path'].$row['file'],$dir.$row['file']);
+                if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
+                    $new = $this->getThumbnail($dir.$row['file']);
+                    $this->fs->copyFile($old,$new);
+                }
+                if (!empty($this->config['previews'])) {
+                    foreach ($this->config['previews'] as $key=>$value) {
+                        $old = $row['path'].'/'.$value['folder'].'/'.$row['file'];
+                        $new = $dir.'/'.$value['folder'].'/'.$row['file'];
+                        $this->fs->copyFile($old,$new);
+                    }
+                }
+                $row['path'] = $dir;
+                $this->modx->db->insert($row, $table);
+            }
+        }
+    }
     
     public function getThumbnail($image) {
         $out = '';

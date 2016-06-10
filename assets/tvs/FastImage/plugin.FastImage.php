@@ -23,6 +23,11 @@ if ($e->name == 'OnDocFormSave') {
     $doc->save(false,false);
     $fi->deleteUnused($values, $id);
 }
+if ($e->name == 'OnDocDuplicate') {
+    include_once(MODX_BASE_PATH.'assets/tvs/FastImage/core/data.php');
+    $fi = new \FastImageTV\Data($modx);
+    $fi->duplicate($id, $new_id);
+}
 if ($e->name == 'OnEmptyTrash') {
     if (empty($ids)) return;
     include_once(MODX_BASE_PATH.'assets/tvs/FastImage/core/data.php');
