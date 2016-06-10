@@ -220,6 +220,9 @@ class Data extends \autoTable {
     }
 
     public function duplicate($source,$target) {
+        include_once(MODX_BASE_PATH.'assets/lib/MODxAPI/modResource.php');
+        $doc = new \modResource($this->modx);
+        $doc->edit($target);
         $table = $this->makeTable($this->table);
         $result = $this->modx->db->select('*', $table, "parent='{$source}'");
         $parent = $this->modx->db->select('parent',$this->makeTable('site_content'),"id='{$source}'");
@@ -235,6 +238,7 @@ class Data extends \autoTable {
                 $dir = $this->config['folder'];
                 $dir = $this->prepare($dir);
                 $this->fs->copyFile($row['path'].$row['file'],$dir.$row['file']);
+                $doc->set($row['class'],$dir.$row['file']);
                 if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
                     $new = $this->getThumbnail($dir.$row['file']);
                     $this->fs->copyFile($old,$new);
@@ -249,6 +253,7 @@ class Data extends \autoTable {
                 $row['path'] = $dir;
                 $this->modx->db->insert($row, $table);
             }
+            $doc->save();
         }
     }
     
