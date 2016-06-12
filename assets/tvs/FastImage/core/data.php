@@ -40,14 +40,19 @@ class Data extends \autoTable {
         $this->set('createdby',$this->modx->getLoginUserID('mgr'));
         if (!$this->config['clientResize']) {
             $options = array();
-            if (!empty($maxWidth = $this->config['imageTransform']['maxWidth'])) $options[] = 'w='.$maxWidth;
-            if (!empty($maxHeight = $this->config['imageTransform']['maxHeight'])) $options[] = 'h='.$maxHeight;
-            if (!empty($quality = $this->config['imageTransform']['quality'])) {
-                $options[] = 'q='.round($quality * 100,0);
+            $info = getimagesize(MODX_BASE_PATH.$file);
+            if (!empty($maxWidth = $this->config['imageTransform']['maxWidth']) && $maxWidth < $info[0]) $options[] = 'w='.$maxWidth;
+            if (!empty($maxHeight = $this->config['imageTransform']['maxHeight']) && $maxHeight < $info[1]) $options[] = 'h='.$maxHeight;
+            if (in_array(strtolower($this->fs->takeFileExt($file)),array('jpg','jpeg'))) {
+                if (!empty($quality = $this->config['imageTransform']['quality'])) {
+                    $options[] = 'q='.round($quality * 100,0);
+                }
+                $options[] = 'ar=x';
             }
-            $options[] = 'ar=x';
-            $thumb = new \Helpers\PHPThumb();
-            $thumb->create(MODX_BASE_PATH.$file,MODX_BASE_PATH.$file,implode('&',$options));
+            if ($options) {
+                $thumb = new \Helpers\PHPThumb();
+                $thumb->create(MODX_BASE_PATH . $file, MODX_BASE_PATH . $file, implode('&', $options));
+            }
         }
         $this->set('size',$this->fs->fileSize($file));
         $out = $this->save(true);
@@ -299,7 +304,11 @@ CREATE TABLE IF NOT EXISTS {$this->makeTable($this->table)} (
 `createdon` datetime NOT NULL default '0000-00-00 00:00:00',
 `createdby` int(10) NOT NULL default '0',
 PRIMARY KEY  (`id`),
-KEY `parent` (`parent`)
+KEY `parent` (`parent`),
+KEY `path` (`parent`),
+KEY `file` (`file`),
+KEY `class` (`class`),
+KEY `createdon` (`createdon`)
 ) ENGINE=MyISAM COMMENT='Datatable for User Files.';
 OUT;
         return $this->query($sql);
