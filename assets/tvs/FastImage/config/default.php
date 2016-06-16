@@ -17,14 +17,10 @@ $config = array(
     ),/*
     "previews" => array(
         "300x300" => array(
-            "parent" => 0,
-            "template" = > 1,
             "folder" => "300x300",
             "options" => "w=300&h=300&zc=C"
         ),
         "500x500" => array(
-            "parent" => 0,
-            "template" => 1,
             "folder" => "500x500",
             "options" => "w=500&h=500&zc=C"
         )

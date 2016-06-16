@@ -41,11 +41,11 @@ class Data extends \autoTable {
         if (!$this->config['clientResize']) {
             $options = array();
             $info = getimagesize(MODX_BASE_PATH.$file);
-            if (!empty($maxWidth = $this->config['imageTransform']['maxWidth']) && $maxWidth < $info[0]) $options[] = 'w='.$maxWidth;
-            if (!empty($maxHeight = $this->config['imageTransform']['maxHeight']) && $maxHeight < $info[1]) $options[] = 'h='.$maxHeight;
+            if (!empty($this->config['imageTransform']['maxWidth']) && $this->config['imageTransform']['maxWidth'] < $info[0]) $options[] = 'w='.$this->config['imageTransform']['maxWidth'];
+            if (!empty($this->config['imageTransform']['maxHeight']) && $this->config['imageTransform']['maxHeight'] < $info[1]) $options[] = 'h='.$this->config['imageTransform']['maxHeight'];
             if (in_array(strtolower($this->fs->takeFileExt($file)),array('jpg','jpeg'))) {
-                if (!empty($quality = $this->config['imageTransform']['quality'])) {
-                    $options[] = 'q='.round($quality * 100,0);
+                if (!empty($this->config['imageTransform']['quality'])) {
+                    $options[] = 'q='.round($this->config['imageTransform']['quality'] * 100,0);
                 }
                 $options[] = 'ar=x';
             }
@@ -64,7 +64,7 @@ class Data extends \autoTable {
             }
             if (!empty($this->config['previews'])) {
                 foreach ($this->config['previews'] as $key=>$value) {
-                    $this->makeThumb($value['folder'],$file,$value['params']);
+                    $this->makeThumb($value['folder'],$file,$value['options']);
                 }
             }
         }
@@ -89,7 +89,8 @@ class Data extends \autoTable {
                 $this->loadConfig($row['class']);
                 $file = $row['path'] . $row['file'];
                 $this->fs->unlink($file);
-                if (!empty($thumbnail = $this->getThumbnail($file))) {
+                $thumbnail = $this->getThumbnail($file);
+                if (!empty($thumbnail)) {
                     $this->fs->unlink($thumbnail);
                     @rmdir($this->fs->takeFileDir($thumbnail));
                 }
@@ -132,7 +133,8 @@ class Data extends \autoTable {
             $this->close();
             $this->fs->moveFile($image,$new);
             $out = $new;
-            if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
+            $old = $this->getThumbnail($row['path'].$row['file']);
+            if (!empty($old)) {
                 $new = $this->getThumbnail($new);
                 $this->fs->moveFile($old,$new);
                 @rmdir($this->fs->takeFileDir($old));
@@ -244,7 +246,8 @@ class Data extends \autoTable {
                 $dir = $this->prepare($dir);
                 $this->fs->copyFile($row['path'].$row['file'],$dir.$row['file']);
                 $doc->set($row['class'],$dir.$row['file']);
-                if (!empty($old = $this->getThumbnail($row['path'].$row['file']))) {
+                $old = $this->getThumbnail($row['path'].$row['file']);
+                if (!empty($old)) {
                     $new = $this->getThumbnail($dir.$row['file']);
                     $this->fs->copyFile($old,$new);
                 }
@@ -321,5 +324,9 @@ OUT;
             $_config = include($file);
             if (is_array($_config)) $this->config = $config == 'default' ? $_config : array_merge($this->config,$_config);
         }
+    }
+
+    public function checkUnique($file) {
+
     }
 }
