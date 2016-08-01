@@ -7,6 +7,8 @@ if ($e->name == 'OnDocFormSave') {
     $fi = new \FastImageTV\Data($modx);
     $tvs = $fi->getFastImageTVs();
     $doc->edit($id);
+    $flag = array_intersect(array_keys($doc->toArray()),$tvs);
+    if(!$flag) return;
     $values = array();
     foreach ($tvs as $tv) {
         $value = $doc->get($tv);
