@@ -326,7 +326,4 @@ OUT;
         }
     }
 
-    public function checkUnique($file) {
-
-    }
 }
