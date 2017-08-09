@@ -10,6 +10,7 @@ if (empty ($modx->config)) {
 if(!isset($_SESSION['mgrValidated'])){
     die();
 }
+$modx->invokeEvent('OnManagerPageInit');
 
 $mode = (isset($_REQUEST['mode']) && is_scalar($_REQUEST['mode'])) ? $_REQUEST['mode'] : null;
 $out = null;
