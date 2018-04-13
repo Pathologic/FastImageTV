@@ -34,7 +34,7 @@ $config = array(
     // preview in the Manager
     "thumbnail" => array(
         "folder" => ".thumbs",
-        "options" => "w=200&h=200&far=C&bg=FFFFFF"
+        "options" => "w=150&h=150&far=C&bg=FFFFFF"
     )/*,
     "previews" => array(
         "300x300" => array(
