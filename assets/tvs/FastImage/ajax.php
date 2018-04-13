@@ -20,6 +20,6 @@ $controller = new \FastImageTV\Controller($modx);
 if (!empty($mode) && method_exists($controller, $mode)) {
     $out = call_user_func_array(array($controller, $mode), array());
 }else{
-    $out = array('success'=>false,'message'=>'Неизвестная ошибка.');
+    $out = array('success'=>false,'message'=>'Unknown error.');
 }
 echo ($out = is_array($out) ? json_encode($out) : $out);
