@@ -6,8 +6,8 @@
     <img class="fi-image" src="[+image+]" alt="">
     <div class="fi-progress"></div>
     <div class="fi-actions">
-        <a class="fi-btn fi-upload" href="#">Загрузить</a>
-        <a class="fi-btn fi-delete[+disabled+]" href="#">Удалить</a>
+        <a class="fi-btn fi-upload" href="#"><i class="fa fa-upload"></i></a>
+        <a class="fi-btn fi-delete[+disabled+]" href="#"><i class="fa fa-trash"></i></a>
     </div>
 </div>
 <script type="text/javascript">
