@@ -20,10 +20,15 @@
                    uploader.clear();
                    upload.trigger('click');
                 });
-                deleteBtn.click(function(e){
-                    e.preventDefault();
-                    if (!$(e.target).hasClass('disabled')) uploader.delete();
-                });
+				deleteBtn.click(function(e){
+					e.preventDefault();
+					if (!$(e.target).hasClass('disabled')) {
+						var confirmDelete = confirm("Delete image?");
+						if (confirmDelete == true) {
+							uploader.delete();
+						}
+					}
+				});
                 FileAPI.event.on(upload[0], 'change', function (evt){
                     var files = FileAPI.getFiles(evt); // Retrieve file list
                     FileAPI.filterFiles(files, function (file, info/**Object*/){
