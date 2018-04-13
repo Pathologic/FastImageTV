@@ -1,17 +1,18 @@
 <?php
 /**
- * Плейсхолдеры в имени папки и файла:
- * [+id+] - id документа
- * [+parent+] - родитель документа
- * [+uid+] - id менеджера
- * [+rand+] - случайное значение
- * [+time+] - unix-время
- * [+year+] - год
- * [+month+] - месяц
- * [+day+] - день
- * [+hour+] - час
- * [+minute+] - минута
- * [+second+] - секунда
+ * Placeholders available in the folder and file name:
+ *
+ * [+id+] - document id
+ * [+parent+] - parent id
+ * [+uid+] - user id
+ * [+rand+] - random value
+ * [+time+] - unix-time
+ * [+year+] - year
+ * [+month+] - month
+ * [+day+] - day
+ * [+hour+] - hour
+ * [+minute+] - minute
+ * [+second+] - second
  * 
  */
 $config = array();
@@ -19,19 +20,22 @@ $config = array(
     "folder" => "assets/user_images/[+id+]/",
     "filename" => "[+month+]-[+day+]-[+filename+]",
     "allowed" => array('png','jpg','jpeg','gif'),
-    //настройки для преобразования изображения при загрузке
+    
+    // settings for image conversion at boot time
     "imageTransform" => array(
         "maxWidth" => 1920,
         "maxHeight" => 1080,
         "quality" => 0.93,
     ),
-    //преобразовывать на клиенте если true, иначе на сервере
+    
+    // convert on the client side if true, otherwise on the server
     "clientResize" => true,
-    //превью в админке
+    
+    // preview in the Manager
     "thumbnail" => array(
         "folder" => ".thumbs",
         "options" => "w=200&h=200&far=C&bg=FFFFFF"
-    ),/*
+    )/*,
     "previews" => array(
         "300x300" => array(
             "folder" => "300x300",
