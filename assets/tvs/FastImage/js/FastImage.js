@@ -22,7 +22,7 @@
                 });
 				deleteBtn.click(function(e){
 					e.preventDefault();
-					if (!$(e.target).hasClass('disabled')) {
+					if (!$(this).hasClass('disabled')) {
 						var confirmDelete = confirm("Delete image?");
 						if (confirmDelete == true) {
 							uploader.delete();
