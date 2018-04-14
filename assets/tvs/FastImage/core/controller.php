@@ -29,19 +29,19 @@ class Controller {
     }
 
     public function upload() {
-        if (!$this->class || !$this->uid) return array('success'=>false,'message'=>'Неизвестная ошибка.');
+        if (!$this->class || !$this->uid) return array('success'=>false,'message'=>'Unknown error.');
         $out = '';
         $class= $this->class;
         if (!empty($this->config['folder'])) {
             $dir = $this->config['folder'];
             $allowedFiles = $this->config['allowed'];
         } else {
-            return array('success'=>false,'message'=>'Неверная конфигурация.');
+            return array('success'=>false,'message'=>'Invalid configuration.');
         }
         if (!empty($_FILES['file']) && !$_FILES['file']['error'] && is_uploaded_file($_FILES['file']['tmp_name'])) {
             $name = $_FILES['file']['name'];
             $ext = $this->fs->takeFileExt($name);
-            if (!in_array(strtolower($ext),$allowedFiles)) return array('success'=>false,'message'=>'Запрещено загружать такие файлы.');
+            if (!in_array(strtolower($ext),$allowedFiles)) return array('success'=>false,'message'=>'This file type is not allowed.');
             $dir = $this->data->prepare($dir);
             if ($this->fs->makeDir($dir)) {
                 $name = $this->data->stripName($name);
@@ -62,10 +62,10 @@ class Controller {
                         'type'=>'image'
                     ));
                 } else {
-                    return array('success'=>false,'message'=>'Не удалось загрузить файл.');
+                    return array('success'=>false,'message'=>'File could not be uploaded.');
                 }
             } else {
-                return array('success'=>false,'message'=>'Не удалось загрузить файл');
+                return array('success'=>false,'message'=>'Could not upload file.');
             }
         }
         if ($out) $out = array('success'=>true,'data'=>$this->data->toArray());
@@ -73,7 +73,7 @@ class Controller {
     }
 
     public function delete() {
-        if (!$this->class || !$this->uid || !isset($_REQUEST['file']) || !is_scalar(($_REQUEST['file']))) array('success'=>false,'message'=>'Не удалось выполнить операцию.');
+        if (!$this->class || !$this->uid || !isset($_REQUEST['file']) || !is_scalar(($_REQUEST['file']))) array('success'=>false,'message'=>'Operation failed.');
         $file = $this->modx->db->escape($_REQUEST['file']);
         $this->data->deleteFile($file,$this->class,$this->documentData['id']);
         return array('success'=>true);

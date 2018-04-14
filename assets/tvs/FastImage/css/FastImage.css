@@ -1,11 +1,11 @@
 .fi-placeholder {
     display: inline-block;
-    min-width:200px;
-    min-height:200px;
-    position:relative;
-    border:1px dashed #000;
-    background: #fff;
-    margin:10px 0 0 0;
+    min-width: 150px;
+    min-height: 150px;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: #fff;
+    margin: 0 0 10px 0;
 }
 .fi-placeholder.dnd:after {
     content:"";
@@ -21,48 +21,74 @@
     display: none;
 }
 .fi-actions {
-    position: absolute;
-    bottom:0;
-    width:100%;
     text-align: center;
-    padding:10px 0;
-    background: rgba(0,0,0,.5);
+    padding: 7px 0;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    background: rgba(0,0,0,0.05);
 }
 .fi-btn {
     display: inline-block;
     text-align: center;
     padding:5px 10px;
-    color:#fff !important;
+    border: 1px solid rgba(0,0,0,0.15);
+    background-color: #fff;
+    color: #292b2c;
     text-decoration:none !important;
-    margin:0 3px;
+    margin:0 1px;
+    min-width: 65px;
+    transition: all 0.15s ease;
+}
+.fi-btn:not(.disabled):hover {
+    border-color: rgba(0,0,0,0.3);
+}
+.fi-btn:not(.disabled):active {
+    background-color: #f7f7f7;
+}
+.fi-btn .fa {
+    font-size: 14px;
 }
 .fi-btn.disabled {
     opacity:0.5;
     cursor:not-allowed;
 }
-.fi-upload {
-    background-color: rgb(36, 147, 34);
-}
-.fi-delete {
-    background-color: rgb(255, 40, 57);
-}
 .fi-progress {
     display: none;
     position:absolute;
-    bottom:0;
-    left:0;
+    z-index: 10;
+    bottom:-1px;
+    left:-1px;
     width:0;
-    height:3px;
-    background-color: rgb(36, 147, 34);
+    height:2px;
+    background-color: #5cb85c;
     transition:width .5s ease;
 }
 .fi-image {
     width:auto;
     height:auto;
-    max-width:200px;
-    max-height:200px;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+    max-width:150px;
+    max-height:150px;
+}
+
+/* evo darkness mode */
+
+.darkness .fi-placeholder {
+    border: 1px solid rgba(255,255,255,0.15);
+    background: #202329;
+}
+.darkness .fi-actions {
+    border-top-color: transparent;
+    background-color: transparent;
+}
+.darkness .fi-btn {
+    border: 1px solid rgba(255,255,255,0.3);
+    background-color: rgba(0,0,0,0.5);
+    color: #999;
+}
+.darkness .fi-btn:not(.disabled):hover {
+    border-color: rgba(255,255,255,0.5);
+}
+.darkness .fi-btn:not(.disabled):active {
+    background-color: rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.65);
+    color: #ebebeb;
 }
