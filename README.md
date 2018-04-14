@@ -22,5 +22,5 @@ At the same time, full compatibility with regular TV of the image type is preser
 
 ### References
 
-Announcment on modx.im
+Announcement on modx.im:
 http://modx.im/blog/addons/4533.html
