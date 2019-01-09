@@ -219,7 +219,7 @@ class Data extends \autoTable {
     }
 
     public function deleteLost($keepLost = 24) {
-        $result = $this->query("SELECT `id` FROM {$this->makeTable($this->table)} WHERE `parent`=0 AND DATEDIFF(hour, `createdon`, getdate()) > {$keepLost}");
+        $result = $this->query("SELECT `id` FROM {$this->makeTable($this->table)} WHERE `parent`=0 AND TIMESTAMPDIFF(hour, `createdon`, NOW()) > {$keepLost}");
         if ($this->modx->db->getRecordCount($result)) {
             $ids = $this->modx->db->getColumn('id',$result);
             $this->delete($ids);
