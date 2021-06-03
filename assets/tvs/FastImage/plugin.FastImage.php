@@ -2,8 +2,8 @@
 $e = $modx->event;
 if ($e->name == 'OnDocFormSave') {
     include_once(MODX_BASE_PATH.'assets/tvs/FastImage/core/data.php');
-    include_once(MODX_BASE_PATH.'assets/lib/MODxAPI/modResource.php');
-    $doc = new modResource($modx);
+    include_once(MODX_BASE_PATH.'assets/tvs/FastImage/core/modResourceFactory.php');
+    $doc = modResourceFactory::build($modx);
     $fi = new \FastImageTV\Data($modx);
     $tvs = $fi->getFastImageTVs();
     $doc->edit($id);
