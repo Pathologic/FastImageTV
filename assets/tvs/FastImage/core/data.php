@@ -227,13 +227,13 @@ class Data extends \autoTable {
     }
 
     public function duplicate($source,$target) {
-        include_once(MODX_BASE_PATH.'assets/lib/MODxAPI/modResource.php');
-        $doc = new \modResource($this->modx);
+        include_once(MODX_BASE_PATH.'assets/tvs/FastImage/core/modResourceFactory.php');
+        $doc = \modResourceFactory::build($this->modx);
         $doc->edit($target);
         $table = $this->makeTable($this->table);
         $result = $this->modx->db->select('*', $table, "parent='{$source}'");
         $parent = $this->modx->db->select('parent',$this->makeTable('site_content'),"id='{$source}'");
-        $parent = $this->modx->db->getRow('parent',$parent);
+        $parent = $this->modx->db->getRow($parent);
         if ($this->modx->db->getRecordCount($result)) {
             while ($row = $this->modx->db->getRow($result)) {
                 unset($row['id']);
