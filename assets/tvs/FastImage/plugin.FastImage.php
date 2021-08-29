@@ -21,6 +21,31 @@ if ($e->name == 'OnDocFormSave') {
             }
         }
         $values[] = array('class'=>$tv,'file'=>$doc->get($tv), 'parent'=>$id);
+
+        // check thumbs exists and create if not
+        if (!empty($value)) {
+            $thumbnail = $fi->getThumbnail($value);
+            if (!file_exists(MODX_BASE_PATH.$thumbnail)) {
+                $options = [];
+                $info = getimagesize(MODX_BASE_PATH.$value);
+                if (!empty($fi->config['imageTransform']['maxWidth']) && $fi->config['imageTransform']['maxWidth'] < $info[0]) {
+                    $options[] = 'w='.$fi->config['imageTransform']['maxWidth'];
+                }
+                if (!empty($fi->config['imageTransform']['maxHeight']) && $fi->config['imageTransform']['maxHeight'] < $info[1]) {
+                    $options[] = 'h='.$fi->config['imageTransform']['maxHeight'];
+                }
+                $ext = pathinfo($value, PATHINFO_EXTENSION);
+                if (in_array(strtolower(pathinfo($value, PATHINFO_EXTENSION)), array('jpg', 'jpeg'))) {
+                    if (!empty($fi->config['imageTransform']['quality'])) {
+                        $options[] = 'q='.round($fi->config['imageTransform']['quality'] * 100, 0);
+                    }
+                    $options[] = 'ar=x';
+                }
+                
+                $fi->makeThumb('.thumbs', $value, $options);
+                $fi->set('thumbnail', $fi->getThumbnail($thumbnail));
+            }
+        }
     }
     $doc->save(false,false);
     $fi->deleteUnused($values, $id);
