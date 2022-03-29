@@ -21,6 +21,15 @@ if ($e->name == 'OnDocFormSave') {
             }
         }
         $values[] = array('class'=>$tv,'file'=>$doc->get($tv), 'parent'=>$id);
+
+        // check thumbs exists and create if not
+        if (!empty($value)) {
+            $thumbnail = $fi->getThumbnail($value);
+            if (!file_exists(MODX_BASE_PATH.$thumbnail)) {
+                $fi->makeThumb($fi->config['thumbnail']['folder'], $value, $fi->config['thumbnail']['options']);
+                $fi->set('thumbnail', $fi->getThumbnail($thumbnail));
+            }
+        }
     }
     $doc->save(false,false);
     $fi->deleteUnused($values, $id);
